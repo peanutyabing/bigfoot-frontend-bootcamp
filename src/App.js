@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import Sighting from "./Components/Sighting.js";
+import SightingSummary from "./Components/SightingSummary.js";
 import axios from "axios";
 import "./App.css";
 
 export default function App() {
-  const [sightings, setSightings] = useState();
+  const [sightings, setSightings] = useState([]);
 
   useEffect(() => {
     getSightings();
@@ -18,7 +18,7 @@ export default function App() {
   const renderSightings = () => {
     if (sightings && sightings.length > 0) {
       return sightings.map((sighting, index) => (
-        <Sighting key={index} data={sighting} />
+        <SightingSummary key={index} sightingIndex={index} data={sighting} />
       ));
     }
   };
