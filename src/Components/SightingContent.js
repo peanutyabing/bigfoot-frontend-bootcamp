@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
+import { BACKEND_URL } from "../Constants.js";
 
 export default function SightingContent() {
   const [sighting, setSighting] = useState({});
@@ -14,7 +15,7 @@ export default function SightingContent() {
   const getSighting = async () => {
     let sightingIndex = currentRoute.pathname.split("/").slice(-1);
     let sightingResponse = await axios.get(
-      `http://localhost:3000/sightings/${sightingIndex}`
+      `${BACKEND_URL}/sightings/${sightingIndex}`
     );
     setSighting(sightingResponse.data);
   };

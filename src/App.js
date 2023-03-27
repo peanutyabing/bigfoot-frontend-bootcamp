@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import SightingSummary from "./Components/SightingSummary.js";
 import axios from "axios";
+import { BACKEND_URL } from "./Constants.js";
 import "./App.css";
 
 export default function App() {
@@ -11,7 +12,7 @@ export default function App() {
   }, []);
 
   const getSightings = async () => {
-    const sightingsRes = await axios.get("http://localhost:3000/sightings");
+    const sightingsRes = await axios.get(`${BACKEND_URL}/sightings`);
     setSightings(sightingsRes.data);
   };
 
@@ -20,6 +21,8 @@ export default function App() {
       return sightings.map((sighting, index) => (
         <SightingSummary key={index} sightingIndex={index} data={sighting} />
       ));
+    } else {
+      return "Loading...";
     }
   };
 

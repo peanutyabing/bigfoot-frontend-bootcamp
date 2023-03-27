@@ -9,8 +9,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="sightings/:postId" element={<SightingContent />} />
+      <Route index={true} element={<App />} />
+      <Route path="sightings/:sightingId" element={<SightingContent />} />
     </Routes>
   </BrowserRouter>
 );
