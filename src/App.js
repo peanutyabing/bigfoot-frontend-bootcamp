@@ -27,7 +27,7 @@ export default function App() {
     <div className="App">
       <header className="App-header">
         <h1>Bigfoot sightings</h1>
-        {renderSightings()}
+        <div className="flex-container">{renderSightings()}</div>
       </header>
     </div>
   );

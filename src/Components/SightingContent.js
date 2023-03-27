@@ -25,7 +25,7 @@ export default function SightingContent() {
         <Link to="/">
           <Button>Back</Button>
         </Link>
-        <div className="header-container">
+        <div>
           <h2>Year: {sighting.YEAR}</h2>
           {sighting.MONTH && <h2>Month: {sighting.MONTH}</h2>}
           {sighting.SEASON && <h2>Season: {sighting.SEASON}</h2>}
