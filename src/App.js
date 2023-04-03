@@ -1,14 +1,14 @@
 import { Outlet } from "react-router-dom";
 import "./App.css";
-import NavBar from "./Components/NavBar.js";
+import SightingSummary from "./Components/SightingSummary.js";
 
 export default function App() {
   return (
     <div className="App">
-      <NavBar />
       <header className="App-header">
-        <Outlet />
+        <SightingSummary />
       </header>
+      <Outlet />
     </div>
   );
 }

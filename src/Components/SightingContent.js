@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import { BACKEND_URL } from "../Constants.js";
 
 export default function SightingContent() {
   const [sighting, setSighting] = useState({});
-  let currentRoute = useLocation();
+  let { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,10 +14,7 @@ export default function SightingContent() {
   }, []);
 
   const getSighting = async () => {
-    let sightingIndex = currentRoute.pathname.split("/").slice(-1);
-    let sightingResponse = await axios.get(
-      `${BACKEND_URL}/sightings/${sightingIndex}`
-    );
+    let sightingResponse = await axios.get(`${BACKEND_URL}/sightings/${id}`);
     setSighting(sightingResponse.data);
   };
 
@@ -41,15 +38,9 @@ export default function SightingContent() {
           </Button>
         </div>
         <div>
-          <h2>Year: {sighting.YEAR}</h2>
-          {sighting.MONTH && <h2>Month: {sighting.MONTH}</h2>}
-          {sighting.SEASON && <h2>Season: {sighting.SEASON}</h2>}
-          {(sighting.COUNTY || sighting.STATE) && (
-            <h2>
-              Location: {sighting.COUNTY} {sighting.STATE}
-            </h2>
-          )}
-          <p>{sighting.OBSERVED}</p>
+          <h4>Date: {sighting.date}</h4>
+          <h4>Location: {sighting.location}</h4>
+          <p>{sighting.notes}</p>
         </div>
       </header>
     </div>

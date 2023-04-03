@@ -16,6 +16,7 @@ export default function Filter() {
 
   return (
     <Modal
+      centered
       show={true}
       onHide={() => {
         navigate("/");

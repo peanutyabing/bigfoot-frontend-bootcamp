@@ -25,6 +25,10 @@
   justify-content: center;
 }
 
+.form-group {
+  margin-bottom: 2vmin;
+}
+
 .card {
   color: #000000;
   width: 24rem;

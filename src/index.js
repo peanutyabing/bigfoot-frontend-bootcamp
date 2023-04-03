@@ -4,19 +4,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import SightingContent from "./Components/SightingContent.js";
-import SightingSummary from "./Components/SightingSummary.js";
 import Filter from "./Components/Filter.js";
+import NavBar from "./Components/NavBar.js";
+import ReportForm from "./Components/ReportForm.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
+    <NavBar />
     <Routes>
       <Route path="/" element={<App />}>
-        <Route index element={<SightingSummary />} />
         <Route path="filter" element={<Filter />} />
-        <Route path="sightings/:sightingId" element={<SightingContent />} />
-        <Route path="*" element={"Path does not exist"} />
+        <Route path="report-sighting" element={<ReportForm />} />
       </Route>
+      <Route path="sightings/:id" element={<SightingContent />} />
+      <Route path="*" element={"Path does not exist"} />
     </Routes>
   </BrowserRouter>
 );
