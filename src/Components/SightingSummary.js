@@ -36,12 +36,16 @@ export default function SightingSummary() {
   const renderSightings = () => {
     if (sightings && sightings.length > 0) {
       return sightings.map((sighting) => (
-        <Link to={`/sightings/${sighting.id}`} key={sighting.id}>
+        <Link
+          to={`/sightings/${sighting.id}`}
+          key={sighting.id}
+          style={{ textDecoration: "none" }}
+        >
           <Card>
             <Card.Body>
-              <Card.Title>
-                {`${sighting.date.slice(0, 4)}, ${sighting.location}`}
-              </Card.Title>
+              {`${sighting.date.slice(0, 4)}, ${sighting.region}, ${
+                sighting.country
+              }`}
             </Card.Body>
           </Card>
         </Link>

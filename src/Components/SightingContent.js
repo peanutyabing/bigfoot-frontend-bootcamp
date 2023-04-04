@@ -4,6 +4,11 @@ import { Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { BACKEND_URL } from "../Constants.js";
 import DatePicker from "react-datepicker";
+import {
+  CountryDropdown,
+  RegionDropdown,
+  CountryRegionData,
+} from "react-country-region-selector";
 
 export default function SightingContent() {
   const [sighting, setSighting] = useState({});
@@ -28,7 +33,12 @@ export default function SightingContent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (sighting.date && sighting.location && sighting.notes) {
+    if (
+      sighting.date &&
+      sighting.country &&
+      sighting.region &&
+      sighting.notes
+    ) {
       try {
         const updatedSighting = await axios.put(
           `${BACKEND_URL}/sightings/${id}`,
@@ -39,7 +49,7 @@ export default function SightingContent() {
         console.log(err.message);
       }
     } else {
-      alert("Please complete all fields.");
+      alert("Please complete all mandatory fields.");
     }
   };
 
@@ -47,7 +57,7 @@ export default function SightingContent() {
     return (
       <Form onSubmit={handleSubmit} className="form">
         <Form.Group className="flex-container-form">
-          <div>Date: </div>
+          <div className="label">Date* </div>
           <DatePicker
             selected={new Date(sighting.date)}
             onChange={(date) => {
@@ -57,16 +67,50 @@ export default function SightingContent() {
           />
         </Form.Group>
         <Form.Group className="flex-container-form">
-          <div>Location: </div>
-          <Form.Control
-            type="text"
-            value={sighting.location}
-            onChange={(e) => {
-              handleChange("location", e.target.value);
+          <div className="label">Country* </div>
+          <CountryDropdown
+            value={sighting.country}
+            onChange={(country) => {
+              handleChange("country", country);
             }}
           />
         </Form.Group>
         <Form.Group className="flex-container-form">
+          <div className="label">Region* </div>
+          <RegionDropdown
+            country={sighting.country}
+            value={sighting.region}
+            onChange={(region) => {
+              handleChange("region", region);
+            }}
+          />
+        </Form.Group>
+        <Form.Group className="flex-container-form">
+          <div className="label">City/town </div>
+          <Form.Control
+            type="text"
+            value={sighting.cityTown ? sighting.cityTown : ""}
+            onChange={(e) => {
+              handleChange("cityTown", e.target.value);
+            }}
+          />
+        </Form.Group>
+        <Form.Group className="flex-container-form">
+          <div className="label">Other location details </div>
+          <Form.Control
+            type="text"
+            value={
+              sighting.locationDescription ? sighting.locationDescription : ""
+            }
+            onChange={(e) => {
+              handleChange("locationDescription", e.target.value);
+            }}
+          />
+        </Form.Group>
+        <Form.Group>
+          <div className="label">
+            What did you see? Please be as detailed as possible*{" "}
+          </div>
           <Form.Control
             as="textarea"
             rows={8}
@@ -76,8 +120,16 @@ export default function SightingContent() {
             }}
           />
         </Form.Group>
+        <div className="label flex-container-form">*Mandatory fields</div>
         <Form.Group>
           <Button type="submit">Submit</Button>
+          <Button
+            onClick={() => {
+              setEditing(false);
+            }}
+          >
+            Cancel
+          </Button>
         </Form.Group>
       </Form>
     );
@@ -85,10 +137,16 @@ export default function SightingContent() {
 
   const renderSighting = () => {
     return (
-      <div>
-        <div>Date: {sighting.date}</div>
-        <div>Location: {sighting.location}</div>
-        <div>{sighting.notes}</div>
+      <div className="sighting-info">
+        <h5>{sighting.date}</h5>
+        <h5>
+          {sighting.region}, {sighting.country}
+        </h5>
+        {sighting.cityTown && <div>{sighting.cityTown}</div>}
+        {sighting.locationDescription && (
+          <div>Detailed Location: {sighting.locationDescription}</div>
+        )}
+        <div className="notes">{sighting.notes}</div>
       </div>
     );
   };

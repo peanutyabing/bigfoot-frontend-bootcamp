@@ -1,3 +1,15 @@
+* {
+  font-family: "Nunito", sans-serif;
+  font-weight: 300;
+}
+
+.navbar-brand {
+  font-family: "Cinzel Decorative", cursive;
+  font-weight: 700;
+  font-size: calc(10px + 2vmin);
+  color: #282c34;
+}
+
 .App {
   text-align: center;
 }
@@ -25,10 +37,22 @@
   justify-content: center;
 }
 
+.form {
+  width: 60%;
+}
+
+.label {
+  margin-right: 1vmin;
+  min-width: 20%;
+  font-size: calc(10px + 0.5vmin);
+  text-align: left;
+}
+
 .flex-container-form {
   display: flex;
   align-items: center;
-  margin: 1vmin;
+  justify-content: flex-start;
+  margin: 2vmin 0;
 }
 
 .form-group {
@@ -42,6 +66,30 @@
   margin: 1rem;
 }
 
+.card-title {
+  font-size: calc(10px + 1vmin);
+}
+
+.card:hover {
+  color: #e93a63;
+  background-color: #000000;
+  border: 0.5px #ffffff solid;
+}
+
 .btn {
   margin: 1vmin;
+}
+
+.sighting-info {
+  width: 60%;
+  margin: 1vmin;
+}
+
+.notes {
+  margin: 1vmin 0;
+  padding: 1vmin;
+  width: 100%;
+  min-height: 10vh;
+  background-color: #00000060;
+  text-align: justify;
 }

@@ -2,33 +2,47 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Form, Button } from "react-bootstrap";
 import DatePicker from "react-datepicker";
+import {
+  CountryDropdown,
+  RegionDropdown,
+  CountryRegionData,
+} from "react-country-region-selector";
 import axios from "axios";
 import { BACKEND_URL } from "../Constants.js";
 
 export default function ReportForm() {
   const navigate = useNavigate();
   const [date, setDate] = useState(new Date());
-  const [location, setLocation] = useState("");
+  const [country, setCountry] = useState("");
+  const [region, setRegion] = useState("");
+  const [cityTown, setCityTown] = useState("");
+  const [locationDescription, setLocationDescription] = useState("");
   const [notes, setNotes] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (date && location && notes) {
+    if (date && country && region && notes) {
       try {
         const newSighting = await axios.post(`${BACKEND_URL}/sightings`, {
           date: date,
-          location: location,
+          country: country,
+          region: region,
+          cityTown: cityTown,
+          locationDescription: locationDescription,
           notes: notes,
         });
         setDate(new Date());
-        setLocation("");
+        setCountry("");
+        setRegion("");
+        setCityTown("");
+        setLocationDescription("");
         setNotes("");
         navigate("/");
       } catch (err) {
         console.log(err.message);
       }
     } else {
-      alert("Please complete all fields.");
+      alert("Please complete all mandatory fields.");
     }
   };
 
@@ -55,14 +69,35 @@ export default function ReportForm() {
           </Form.Group>
           <Form.Group controlId="location" className="form-group">
             <Form.Label>Where did you see the bigfoot?</Form.Label>
+            <CountryDropdown
+              value={country}
+              onChange={(country) => {
+                setCountry(country);
+              }}
+            />
+            <RegionDropdown
+              country={country}
+              value={region}
+              onChange={(region) => {
+                setRegion(region);
+              }}
+            />
             <Form.Control
               type="text"
-              placeholder="e.g. Warren County, New Jersey, USA"
-              value={location}
+              placeholder="City or town (if applicable)"
+              value={cityTown}
               onChange={(e) => {
-                setLocation(e.target.value);
+                setCityTown(e.target.value);
               }}
-            ></Form.Control>
+            />
+            <Form.Control
+              type="text"
+              placeholder="Other location details (if applicable)"
+              value={locationDescription}
+              onChange={(e) => {
+                setLocationDescription(e.target.value);
+              }}
+            />
           </Form.Group>
           <Form.Group controlId="notes" className="form-group">
             <Form.Label>Describe the sighting</Form.Label>
