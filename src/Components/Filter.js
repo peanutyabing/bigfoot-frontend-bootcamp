@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Form, Button } from "react-bootstrap";
+import DatePicker from "react-datepicker";
 import {
   CountryDropdown,
   RegionDropdown,
@@ -9,13 +10,16 @@ import {
 
 export default function Filter() {
   const navigate = useNavigate();
-  const [year, setYear] = useState("");
+  const [startDate, setStartDate] = useState(new Date(0));
+  const [endDate, setEndDate] = useState(new Date());
   const [country, setCountry] = useState("");
   const [region, setRegion] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate(`..?date=${year}&country=${country}&&region=${region}`);
+    navigate(
+      `..?date=${startDate.toISOString()}~${endDate.toISOString()}&country=${country}&&region=${region}`
+    );
   };
 
   return (
@@ -31,14 +35,20 @@ export default function Filter() {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="year" className="flex-container-form">
-            <div className="label">Year</div>
-            <Form.Control
-              type="text"
-              value={year}
-              onChange={(e) => {
-                setYear(e.target.value);
-              }}
+          <Form.Group controlId="from-date" className="flex-container-form">
+            <div className="label">From</div>
+            <DatePicker
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              showTimeSelect
+            />
+          </Form.Group>
+          <Form.Group controlId="to-date" className="flex-container-form">
+            <div className="label">To</div>
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              showTimeSelect
             />
           </Form.Group>
           <Form.Group controlId="country" className="flex-container-form">
