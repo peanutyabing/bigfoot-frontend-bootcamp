@@ -8,19 +8,19 @@ export default function NavBar() {
       <Container>
         <Navbar.Brand href="/">Bigfoot sightings</Navbar.Brand>
         <Nav className="me-auto">
-          {/* <Nav.Link
-            onClick={() => {
-              navigate("/filter");
-            }}
-          >
-            Filter
-          </Nav.Link> */}
           <Nav.Link
             onClick={() => {
               navigate("/report-sighting");
             }}
           >
             Report a sighting
+          </Nav.Link>
+          <Nav.Link
+            onClick={() => {
+              navigate("/filter");
+            }}
+          >
+            Search
           </Nav.Link>
         </Nav>
       </Container>

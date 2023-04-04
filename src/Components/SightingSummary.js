@@ -14,24 +14,21 @@ export default function SightingSummary() {
   }, [searchParams, location]);
 
   const getSightings = async () => {
-    const sightingsRes = await axios.get(
-      `${BACKEND_URL}/sightings`
-      // , {
-      //   params: getSearchParams(),
-      // }
-    );
+    const sightingsRes = await axios.get(`${BACKEND_URL}/sightings`, {
+      params: getSearchParams(),
+    });
     setSightings(sightingsRes.data);
   };
 
-  // const getSearchParams = () => {
-  //   const params = Object.fromEntries(searchParams.entries());
-  //   for (const key in params) {
-  //     if (!params[key]) {
-  //       delete params[key];
-  //     }
-  //   }
-  //   return params;
-  // };
+  const getSearchParams = () => {
+    const params = Object.fromEntries(searchParams.entries());
+    for (const key in params) {
+      if (!params[key]) {
+        delete params[key];
+      }
+    }
+    return params;
+  };
 
   const renderSightings = () => {
     if (sightings && sightings.length > 0) {
