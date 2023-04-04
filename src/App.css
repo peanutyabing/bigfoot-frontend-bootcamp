@@ -25,6 +25,12 @@
   justify-content: center;
 }
 
+.flex-container-form {
+  display: flex;
+  align-items: center;
+  margin: 1vmin;
+}
+
 .form-group {
   margin-bottom: 2vmin;
 }

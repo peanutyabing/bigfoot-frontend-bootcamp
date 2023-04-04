@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Form, Button } from "react-bootstrap";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
+import { BACKEND_URL } from "../Constants.js";
 
 export default function ReportForm() {
   const navigate = useNavigate();
@@ -15,14 +15,11 @@ export default function ReportForm() {
     e.preventDefault();
     if (date && location && notes) {
       try {
-        const newSighting = await axios.post(
-          "http://localhost:3000/sightings",
-          {
-            date: date,
-            location: location,
-            notes: notes,
-          }
-        );
+        const newSighting = await axios.post(`${BACKEND_URL}/sightings`, {
+          date: date,
+          location: location,
+          notes: notes,
+        });
         setDate(new Date());
         setLocation("");
         setNotes("");
