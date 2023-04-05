@@ -86,10 +86,24 @@
 }
 
 .notes {
-  margin: 1vmin 0;
+  margin: 1vmin 0 3vmin 0;
   padding: 1vmin;
   width: 100%;
   min-height: 10vh;
   background-color: #00000060;
   text-align: justify;
+}
+
+.comments-container {
+  margin: 1vmin 0;
+}
+
+.comment {
+  font-size: calc(10px + 0.75vmin);
+  text-align: justify;
+}
+
+.comment-info {
+  font-size: calc(10px + 0.3vmin);
+  font-weight: 200;
 }

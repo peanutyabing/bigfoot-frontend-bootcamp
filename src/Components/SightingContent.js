@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, ListGroup } from "react-bootstrap";
 import axios from "axios";
 import { BACKEND_URL } from "../Constants.js";
 import DatePicker from "react-datepicker";
@@ -13,6 +13,8 @@ import {
 export default function SightingContent() {
   const [sighting, setSighting] = useState({});
   const [editing, setEditing] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
   let { id } = useParams();
   const navigate = useNavigate();
 
@@ -20,42 +22,25 @@ export default function SightingContent() {
     getSighting();
   }, []);
 
+  useEffect(() => {
+    getComments();
+  }, [newComment]);
+
   const getSighting = async () => {
     let sightingResponse = await axios.get(`${BACKEND_URL}/sightings/${id}`);
     setSighting(sightingResponse.data);
   };
 
-  const handleChange = (key, value) => {
-    const sightingToUpdate = { ...sighting };
-    sightingToUpdate[key] = value;
-    setSighting(sightingToUpdate);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (
-      sighting.date &&
-      sighting.country &&
-      sighting.region &&
-      sighting.notes
-    ) {
-      try {
-        const updatedSighting = await axios.put(
-          `${BACKEND_URL}/sightings/${id}`,
-          sighting
-        );
-        setEditing(false);
-      } catch (err) {
-        console.log(err.message);
-      }
-    } else {
-      alert("Please complete all mandatory fields.");
-    }
+  const getComments = async () => {
+    let commentsResponse = await axios.get(
+      `${BACKEND_URL}/sightings/${id}/comments`
+    );
+    setComments(commentsResponse.data);
   };
 
   const renderForm = () => {
     return (
-      <Form onSubmit={handleSubmit} className="form">
+      <Form onSubmit={handleSubmitSighting} className="form">
         <Form.Group className="flex-container-form">
           <div className="label">Date* </div>
           <DatePicker
@@ -135,6 +120,34 @@ export default function SightingContent() {
     );
   };
 
+  const handleSubmitSighting = async (e) => {
+    e.preventDefault();
+    if (
+      sighting.date &&
+      sighting.country &&
+      sighting.region &&
+      sighting.notes
+    ) {
+      try {
+        const updatedSighting = await axios.put(
+          `${BACKEND_URL}/sightings/${id}`,
+          sighting
+        );
+        setEditing(false);
+      } catch (err) {
+        console.log(err.message);
+      }
+    } else {
+      alert("Please complete all mandatory fields.");
+    }
+  };
+
+  const handleChange = (key, value) => {
+    const sightingToUpdate = { ...sighting };
+    sightingToUpdate[key] = value;
+    setSighting(sightingToUpdate);
+  };
+
   const renderSighting = () => {
     return (
       <div className="sighting-info">
@@ -147,8 +160,62 @@ export default function SightingContent() {
           <div>Detailed Location: {sighting.locationDescription}</div>
         )}
         <div className="notes">{sighting.notes}</div>
+        <h5>Comments</h5>
+        <ListGroup className="comments-container">{renderComments()}</ListGroup>
+        <div className="comments-form">{renderCommentForm()}</div>
       </div>
     );
+  };
+
+  const renderComments = () => {
+    if (comments.length > 0) {
+      return comments.map((comment) => (
+        <ListGroup.Item className="comment" key={comment.id}>
+          <div className="comment-content">{comment.content}</div>
+          <div className="comment-info">{comment.createdAt}</div>
+        </ListGroup.Item>
+      ));
+    } else {
+      return <div>No comments yet</div>;
+    }
+  };
+
+  const renderCommentForm = () => {
+    return (
+      <Form onSubmit={handleSubmitComment}>
+        <Form.Group>
+          <Form.Control
+            as="textarea"
+            rows={2}
+            value={newComment}
+            placeholder="Your comment goes here."
+            onChange={(e) => {
+              setNewComment(e.target.value);
+            }}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Button type="submit">Submit</Button>
+        </Form.Group>
+      </Form>
+    );
+  };
+
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
+    if (newComment) {
+      try {
+        const comment = await axios.post(
+          `${BACKEND_URL}/sightings/${id}/comments`,
+          { content: newComment, sightingId: id }
+        );
+        setNewComment("");
+      } catch (err) {
+        console.log(err.message);
+      }
+    } else {
+      alert("Please write a comment before submitting.");
+    }
   };
 
   return (
