@@ -12,6 +12,7 @@ import {
 
 export default function SightingContent() {
   const [sighting, setSighting] = useState({});
+  const [truncated, setTruncated] = useState(true);
   const [editing, setEditing] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -159,12 +160,49 @@ export default function SightingContent() {
         {sighting.locationDescription && (
           <div>Detailed Location: {sighting.locationDescription}</div>
         )}
-        <div className="notes">{sighting.notes}</div>
+        {expandCollapseText(sighting.notes)}
         <h5>Comments</h5>
         <ListGroup className="comments-container">{renderComments()}</ListGroup>
         <div className="comments-form">{renderCommentForm()}</div>
       </div>
     );
+  };
+
+  const expandCollapseText = (text) => {
+    if (!text) {
+      return;
+    }
+    if (text.length <= 600) {
+      return <div className="notes">{text}</div>;
+    } else if (truncated) {
+      return (
+        <div className="notes">
+          {text.slice(0, 600)}...
+          <div
+            className="btn-no-outline"
+            onClick={() => {
+              setTruncated(false);
+            }}
+          >
+            Read More
+          </div>
+        </div>
+      );
+    } else if (text.length > 600 || !truncated) {
+      return (
+        <div className="notes">
+          {text}
+          <div
+            className="btn-no-outline"
+            onClick={() => {
+              setTruncated(true);
+            }}
+          >
+            Read Less
+          </div>
+        </div>
+      );
+    }
   };
 
   const renderComments = () => {

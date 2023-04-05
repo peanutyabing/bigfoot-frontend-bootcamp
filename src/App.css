@@ -94,6 +94,14 @@
   text-align: justify;
 }
 
+.btn-no-outline {
+  text-decoration: underline 0.5px;
+}
+
+.btn-no-outline:hover {
+  color: #e93a63;
+}
+
 .comments-container {
   margin: 1vmin 0;
 }
