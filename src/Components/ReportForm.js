@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Form, Button } from "react-bootstrap";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 import DatePicker from "react-datepicker";
 import {
   CountryDropdown,
@@ -18,6 +20,13 @@ export default function ReportForm() {
   const [cityTown, setCityTown] = useState("");
   const [locationDescription, setLocationDescription] = useState("");
   const [notes, setNotes] = useState("");
+  const [categories, setCategories] = useState([]);
+  const animatedComponents = makeAnimated();
+
+  useEffect(() => {
+    const categoriesResponse = axios.get(`${BACKEND_URL}/categories`);
+    setCategories(categoriesResponse.dataValue);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,7 +69,7 @@ export default function ReportForm() {
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="date" className="form-group">
-            <Form.Label>Date and time</Form.Label>
+            <Form.Label>Date and time*</Form.Label>
             <DatePicker
               selected={date}
               onChange={(date) => setDate(date)}
@@ -68,14 +77,16 @@ export default function ReportForm() {
             />
           </Form.Group>
           <Form.Group controlId="location" className="form-group">
-            <Form.Label>Where did you see the bigfoot?</Form.Label>
+            <Form.Label>Where did you see the bigfoot?*</Form.Label>
             <CountryDropdown
+              className="select-country"
               value={country}
               onChange={(country) => {
                 setCountry(country);
               }}
             />
             <RegionDropdown
+              className="select-region"
               country={country}
               value={region}
               onChange={(region) => {
@@ -100,7 +111,7 @@ export default function ReportForm() {
             />
           </Form.Group>
           <Form.Group controlId="notes" className="form-group">
-            <Form.Label>Describe the sighting</Form.Label>
+            <Form.Label>Describe the sighting*</Form.Label>
             <Form.Control
               type="text"
               value={notes}
@@ -108,6 +119,14 @@ export default function ReportForm() {
                 setNotes(e.target.value);
               }}
             ></Form.Control>
+          </Form.Group>
+          <Form.Group className="form-group">
+            <Select
+              closeMenuOnSelect={false}
+              components={animatedComponents}
+              isMulti
+              options={categories}
+            />
           </Form.Group>
           <Form.Group className="form-group">
             <Button type="submit">Submit</Button>

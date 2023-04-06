@@ -96,6 +96,9 @@
 
 .btn-no-outline {
   text-decoration: underline 0.5px;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .btn-no-outline:hover {
@@ -107,8 +110,14 @@
 }
 
 .comment {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: calc(10px + 0.75vmin);
   text-align: justify;
+}
+.comment-body {
+  width: 90%;
 }
 
 .comment-info {
