@@ -32,7 +32,7 @@ export default function Comments(props) {
       <ListGroup.Item className="comment" key={comment.id}>
         <div className="comment-body">
           <div className="comment-content">{comment.content}</div>
-          <div className="comment-info">{comment.createdAt}</div>
+          <div className="font-xs">{comment.createdAt}</div>
         </div>
         <div
           className="btn-no-outline"

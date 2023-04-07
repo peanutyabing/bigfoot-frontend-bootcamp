@@ -3,6 +3,11 @@
   font-weight: 300;
 }
 
+.font-xs {
+  font-size: calc(10px + 0.3vmin);
+  font-weight: 200;
+}
+
 .navbar-brand {
   font-family: "Cinzel Decorative", cursive;
   font-weight: 700;
@@ -86,12 +91,24 @@
 }
 
 .notes {
-  margin: 1vmin 0 3vmin 0;
+  margin-top: 1vmin;
   padding: 1vmin;
   width: 100%;
   min-height: 10vh;
   background-color: #00000060;
   text-align: justify;
+}
+
+.categories {
+  display: flex;
+  flex-flow: row wrap;
+  margin-bottom: 2vmin;
+}
+
+.category {
+  margin: 0.5vmin 0.5vmin 0 0;
+  padding: 0.1vmin 0.5vmin;
+  border: 0.5px #ffffff dashed;
 }
 
 .btn-no-outline {
@@ -118,11 +135,6 @@
 }
 .comment-body {
   width: 90%;
-}
-
-.comment-info {
-  font-size: calc(10px + 0.3vmin);
-  font-weight: 200;
 }
 
 .select-country {

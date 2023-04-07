@@ -149,6 +149,14 @@ export default function SightingContent() {
           <div>Detailed Location: {sighting.locationDescription}</div>
         )}
         {expandCollapseText(sighting.notes)}
+        <div className="categories">
+          {sighting.categories &&
+            sighting.categories.map((cat) => (
+              <div className="category font-xs" key={cat.id}>
+                #{cat.name}
+              </div>
+            ))}
+        </div>
         <Comments sightingId={id} />
       </div>
     );
