@@ -95,7 +95,7 @@ export default function Comments(props) {
       try {
         const comment = await axios.put(
           `${BACKEND_URL}/sightings/${props.sightingId}/comments/${editing}`,
-          { content: newComment }
+          { content: newComment, sightingId: props.sightingId }
         );
         setNewComment("");
         setEditing(-1);
@@ -111,7 +111,7 @@ export default function Comments(props) {
       try {
         const comment = await axios.post(
           `${BACKEND_URL}/sightings/${props.sightingId}/comments`,
-          { content: newComment }
+          { content: newComment, sightingId: props.sightingId }
         );
         setNewComment("");
       } catch (err) {

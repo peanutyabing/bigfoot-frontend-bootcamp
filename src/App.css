@@ -124,3 +124,11 @@
   font-size: calc(10px + 0.3vmin);
   font-weight: 200;
 }
+
+.select-country {
+  width: 60%;
+}
+
+.select-region {
+  width: 40%;
+}

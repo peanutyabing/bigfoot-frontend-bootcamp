@@ -21,12 +21,20 @@ export default function ReportForm() {
   const [locationDescription, setLocationDescription] = useState("");
   const [notes, setNotes] = useState("");
   const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const animatedComponents = makeAnimated();
 
   useEffect(() => {
-    const categoriesResponse = axios.get(`${BACKEND_URL}/categories`);
-    setCategories(categoriesResponse.dataValue);
+    getCategoryOptions();
   }, []);
+
+  const getCategoryOptions = async () => {
+    const categoriesRes = await axios.get(`${BACKEND_URL}/categories`);
+    const options = categoriesRes.data.map((row) => {
+      return { value: row.id, label: row.name };
+    });
+    setCategories(options);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,6 +61,10 @@ export default function ReportForm() {
     } else {
       alert("Please complete all mandatory fields.");
     }
+  };
+
+  const handleSelected = (selected) => {
+    setSelectedCategories(selected);
   };
 
   return (
@@ -126,6 +138,8 @@ export default function ReportForm() {
               components={animatedComponents}
               isMulti
               options={categories}
+              value={selectedCategories}
+              onChange={handleSelected}
             />
           </Form.Group>
           <Form.Group className="form-group">
