@@ -136,6 +136,7 @@ export default function ReportForm() {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="form-group">
+            <Form.Label>Select labels</Form.Label>
             <Select
               closeMenuOnSelect={false}
               components={animatedComponents}

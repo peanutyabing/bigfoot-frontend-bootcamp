@@ -4,30 +4,60 @@ import { Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { BACKEND_URL } from "../Constants.js";
 import DatePicker from "react-datepicker";
+
 import {
   CountryDropdown,
   RegionDropdown,
   CountryRegionData,
 } from "react-country-region-selector";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 import Comments from "./Comments.js";
 
 export default function SightingContent() {
   const [sighting, setSighting] = useState({});
   const [truncated, setTruncated] = useState(true);
   const [editing, setEditing] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   let { id } = useParams();
   const navigate = useNavigate();
+  const animatedComponents = makeAnimated();
 
   useEffect(() => {
     getSighting();
-  }, []);
+  }, [editing]);
 
   const getSighting = async () => {
     let sightingResponse = await axios.get(`${BACKEND_URL}/sightings/${id}`);
     setSighting(sightingResponse.data);
+    setSelectedCategories(
+      sightingResponse.data.categories.map((cat) => {
+        return { label: cat.name, value: cat.id };
+      })
+    );
+  };
+
+  useEffect(() => {
+    getCategoryOptions();
+  }, []);
+
+  const getCategoryOptions = async () => {
+    const categoriesRes = await axios.get(`${BACKEND_URL}/categories`);
+    const options = categoriesRes.data.map((row) => {
+      return { value: row.id, label: row.name };
+    });
+    setCategories(options);
   };
 
   const renderForm = () => {
+    const selectFieldStyles = {
+      option: (provided) => ({
+        ...provided,
+        color: "black",
+      }),
+    };
+
     return (
       <Form onSubmit={handleSubmitSighting} className="form">
         <Form.Group className="flex-container-form">
@@ -94,6 +124,17 @@ export default function SightingContent() {
             }}
           />
         </Form.Group>
+
+        <Select
+          styles={selectFieldStyles}
+          closeMenuOnSelect={false}
+          components={animatedComponents}
+          isMulti
+          options={categories}
+          defaultValue={selectedCategories}
+          onChange={handleSelected}
+        />
+
         <div className="label flex-container-form">*Mandatory fields</div>
         <Form.Group>
           <Button type="submit">Submit</Button>
@@ -117,10 +158,20 @@ export default function SightingContent() {
       sighting.region &&
       sighting.notes
     ) {
+      const updates = {
+        date: sighting.date,
+        country: sighting.country,
+        region: sighting.region,
+        cityTown: sighting.cityTown,
+        locationDescription: sighting.locationDescription,
+        notes: sighting.notes,
+        updatedAt: new Date(),
+        categoryIds: selectedCategories.map((cat) => cat.value),
+      };
       try {
         const updatedSighting = await axios.put(
           `${BACKEND_URL}/sightings/${id}`,
-          sighting
+          updates
         );
         setEditing(false);
       } catch (err) {
@@ -197,6 +248,11 @@ export default function SightingContent() {
         </div>
       );
     }
+  };
+
+  const handleSelected = (selected) => {
+    console.log(selected);
+    setSelectedCategories(selected);
   };
 
   return (
