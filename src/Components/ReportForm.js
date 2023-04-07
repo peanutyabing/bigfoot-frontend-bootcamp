@@ -47,6 +47,7 @@ export default function ReportForm() {
           cityTown: cityTown,
           locationDescription: locationDescription,
           notes: notes,
+          categoryIds: selectedCategories.map((cat) => cat.value),
         });
         setDate(new Date());
         setCountry("");
@@ -54,6 +55,7 @@ export default function ReportForm() {
         setCityTown("");
         setLocationDescription("");
         setNotes("");
+        setSelectedCategories([]);
         navigate("/");
       } catch (err) {
         console.log(err.message);
@@ -64,6 +66,7 @@ export default function ReportForm() {
   };
 
   const handleSelected = (selected) => {
+    console.log(selected);
     setSelectedCategories(selected);
   };
 
