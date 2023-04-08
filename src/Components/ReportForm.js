@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Form, Button } from "react-bootstrap";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 import makeAnimated from "react-select/animated";
 import DatePicker from "react-datepicker";
 import {
@@ -22,6 +22,7 @@ export default function ReportForm() {
   const [notes, setNotes] = useState("");
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [newCategories, setNewCategories] = useState([]);
   const animatedComponents = makeAnimated();
 
   useEffect(() => {
@@ -39,16 +40,35 @@ export default function ReportForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (date && country && region && notes) {
+      const sighting = {
+        date: date,
+        country: country,
+        region: region,
+        cityTown: cityTown,
+        locationDescription: locationDescription,
+        notes: notes,
+        categoryIds: selectedCategories.map((cat) => cat.value),
+      };
+      const categoriesToAdd = newCategories.map((newOption) => {
+        return { name: newOption.label };
+      });
       try {
-        const newSighting = await axios.post(`${BACKEND_URL}/sightings`, {
-          date: date,
-          country: country,
-          region: region,
-          cityTown: cityTown,
-          locationDescription: locationDescription,
-          notes: notes,
-          categoryIds: selectedCategories.map((cat) => cat.value),
-        });
+        for (const newCat of categoriesToAdd) {
+          const newCatRes = await axios.post(
+            `${BACKEND_URL}/categories`,
+            newCat
+          );
+          sighting.categoryIds.push(newCatRes.data.id);
+        }
+        setNewCategories([]);
+      } catch (err) {
+        console.log(err.message);
+      }
+      try {
+        const newSighting = await axios.post(
+          `${BACKEND_URL}/sightings`,
+          sighting
+        );
         setDate(new Date());
         setCountry("");
         setRegion("");
@@ -66,8 +86,8 @@ export default function ReportForm() {
   };
 
   const handleSelected = (selected) => {
-    console.log(selected);
-    setSelectedCategories(selected);
+    setSelectedCategories(selected.filter((option) => !option.__isNew__));
+    setNewCategories(selected.filter((option) => option.__isNew__));
   };
 
   return (
@@ -137,12 +157,12 @@ export default function ReportForm() {
           </Form.Group>
           <Form.Group className="form-group">
             <Form.Label>Select labels</Form.Label>
-            <Select
+            <CreatableSelect
               closeMenuOnSelect={false}
               components={animatedComponents}
               isMulti
               options={categories}
-              value={selectedCategories}
+              defaultValue={selectedCategories}
               onChange={handleSelected}
             />
           </Form.Group>

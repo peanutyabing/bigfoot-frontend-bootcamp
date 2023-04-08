@@ -10,7 +10,7 @@ import {
   RegionDropdown,
   CountryRegionData,
 } from "react-country-region-selector";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 import makeAnimated from "react-select/animated";
 import Comments from "./Comments.js";
 
@@ -20,6 +20,7 @@ export default function SightingContent() {
   const [editing, setEditing] = useState(false);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [newCategories, setNewCategories] = useState([]);
   let { id } = useParams();
   const navigate = useNavigate();
   const animatedComponents = makeAnimated();
@@ -125,7 +126,7 @@ export default function SightingContent() {
           />
         </Form.Group>
 
-        <Select
+        <CreatableSelect
           styles={selectFieldStyles}
           closeMenuOnSelect={false}
           components={animatedComponents}
@@ -168,6 +169,21 @@ export default function SightingContent() {
         updatedAt: new Date(),
         categoryIds: selectedCategories.map((cat) => cat.value),
       };
+      const categoriesToAdd = newCategories.map((newOption) => {
+        return { name: newOption.label };
+      });
+      try {
+        for (const newCat of categoriesToAdd) {
+          const newCatRes = await axios.post(
+            `${BACKEND_URL}/categories`,
+            newCat
+          );
+          updates.categoryIds.push(newCatRes.data.id);
+        }
+        setNewCategories([]);
+      } catch (err) {
+        console.log(err.message);
+      }
       try {
         const updatedSighting = await axios.put(
           `${BACKEND_URL}/sightings/${id}`,
@@ -251,8 +267,8 @@ export default function SightingContent() {
   };
 
   const handleSelected = (selected) => {
-    console.log(selected);
-    setSelectedCategories(selected);
+    setSelectedCategories(selected.filter((option) => !option.__isNew__));
+    setNewCategories(selected.filter((option) => option.__isNew__));
   };
 
   return (
