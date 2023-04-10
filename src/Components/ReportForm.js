@@ -23,6 +23,7 @@ export default function ReportForm() {
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [newCategories, setNewCategories] = useState([]);
+  const [intensityLevels, setIntensityLevels] = useState([]);
   const animatedComponents = makeAnimated();
 
   useEffect(() => {
@@ -48,6 +49,7 @@ export default function ReportForm() {
         locationDescription: locationDescription,
         notes: notes,
         categoryIds: selectedCategories.map((cat) => cat.value),
+        intensityLevels: intensityLevels,
       };
       const categoriesToAdd = newCategories.map((newOption) => {
         return { name: newOption.label };
@@ -88,6 +90,31 @@ export default function ReportForm() {
   const handleSelected = (selected) => {
     setSelectedCategories(selected.filter((option) => !option.__isNew__));
     setNewCategories(selected.filter((option) => option.__isNew__));
+  };
+
+  const renderIntensityForm = () => {
+    const output = [];
+    for (let i = 0; i < selectedCategories.length; i++) {
+      output.push(
+        <div key={i}>
+          <div className="label">
+            Intensity for "{selectedCategories[i].label}"
+          </div>
+          <Form.Range
+            name={selectedCategories[i].value}
+            min="1"
+            max="100"
+            value={intensityLevels[i]}
+            onChange={(e) => {
+              const intensityLevelsToUpdate = { ...intensityLevels };
+              intensityLevelsToUpdate[i] = e.target.value;
+              setIntensityLevels(intensityLevelsToUpdate);
+            }}
+          />
+        </div>
+      );
+    }
+    return output;
   };
 
   return (
@@ -165,6 +192,9 @@ export default function ReportForm() {
               defaultValue={selectedCategories}
               onChange={handleSelected}
             />
+          </Form.Group>
+          <Form.Group className="form-group">
+            {renderIntensityForm()}
           </Form.Group>
           <Form.Group className="form-group">
             <Button type="submit">Submit</Button>

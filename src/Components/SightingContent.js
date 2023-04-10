@@ -22,12 +22,6 @@ export default function SightingContent() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [newCategories, setNewCategories] = useState([]);
 
-  const intensityMap = {
-    1: "mildly",
-    2: "very",
-    3: "extremely",
-  };
-
   let { id } = useParams();
   const navigate = useNavigate();
   const animatedComponents = makeAnimated();
@@ -65,6 +59,8 @@ export default function SightingContent() {
         color: "black",
       }),
     };
+
+    const intensityForm = renderIntensityForm();
 
     return (
       <Form onSubmit={handleSubmitSighting} className="form">
@@ -119,7 +115,7 @@ export default function SightingContent() {
             }}
           />
         </Form.Group>
-        <Form.Group>
+        <Form.Group className="container-form">
           <div className="label">
             What did you see? Please be as detailed as possible*{" "}
           </div>
@@ -132,17 +128,19 @@ export default function SightingContent() {
             }}
           />
         </Form.Group>
-
-        <CreatableSelect
-          styles={selectFieldStyles}
-          closeMenuOnSelect={false}
-          components={animatedComponents}
-          isMulti
-          options={categories}
-          defaultValue={selectedCategories}
-          onChange={handleSelected}
-        />
-
+        <Form.Group className="container-form">
+          <div className="label">Select categories</div>
+          <CreatableSelect
+            styles={selectFieldStyles}
+            closeMenuOnSelect={false}
+            components={animatedComponents}
+            isMulti
+            options={categories}
+            defaultValue={selectedCategories}
+            onChange={handleSelected}
+          />
+        </Form.Group>
+        <Form.Group>{intensityForm}</Form.Group>
         <div className="label flex-container-form">*Mandatory fields</div>
         <Form.Group>
           <Button type="submit">Submit</Button>
@@ -156,6 +154,35 @@ export default function SightingContent() {
         </Form.Group>
       </Form>
     );
+  };
+
+  const renderIntensityForm = () => {
+    const output = [];
+    for (let i = 0; i < selectedCategories.length; i++) {
+      if (!sighting.categories[i].sighting_categories) {
+        return;
+      }
+      output.push(
+        <div key={i}>
+          <div className="label">
+            Intensity for "{selectedCategories[i].label}"
+          </div>
+          <Form.Range
+            name={selectedCategories[i].value}
+            min="1"
+            max="100"
+            value={sighting.categories[i].sighting_categories.intensity}
+            onChange={(e) => {
+              const sightingToUpdate = { ...sighting };
+              sighting.categories[i].sighting_categories.intensity =
+                e.target.value;
+              setSighting(sightingToUpdate);
+            }}
+          />
+        </div>
+      );
+    }
+    return output;
   };
 
   const handleSubmitSighting = async (e) => {
@@ -175,6 +202,9 @@ export default function SightingContent() {
         notes: sighting.notes,
         updatedAt: new Date(),
         categoryIds: selectedCategories.map((cat) => cat.value),
+        intensityLevels: sighting.categories.map(
+          (cat) => cat.sighting_categories.intensity
+        ),
       };
       const categoriesToAdd = newCategories.map((newOption) => {
         return { name: newOption.label };
@@ -224,16 +254,19 @@ export default function SightingContent() {
           {sighting.categories &&
             sighting.categories.map((cat) => (
               <div className="category font-xs" key={cat.id}>
-                <span className="italic">
-                  {intensityMap[cat.sighting_categories.intensity]}
-                </span>
-                <span className="bold"> #{cat.name}</span>
+                <div className="bold"> #{cat.name}</div>
+                {mapIntensity(cat.sighting_categories.intensity)}
               </div>
             ))}
         </div>
         <Comments sightingId={id} />
       </div>
     );
+  };
+
+  const mapIntensity = (intensityLevel) => {
+    const width = intensityLevel ? intensityLevel + "%" : "0%";
+    return <div className="intensity-bar" style={{ width: width }}></div>;
   };
 
   const expandCollapseText = (text) => {

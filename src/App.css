@@ -68,6 +68,10 @@
   margin: 2vmin 0;
 }
 
+.container-form {
+  margin: 2vmin 0;
+}
+
 .form-group {
   margin-bottom: 2vmin;
 }
@@ -114,7 +118,7 @@
 }
 
 .category {
-  width: 20%;
+  width: 15%;
   margin: 0.5vmin 0.5vmin 0 0;
   padding: 0.1vmin 0.5vmin;
   border: 0.5px #ffffff dashed;
@@ -152,4 +156,10 @@
 
 .select-region {
   width: 40%;
+}
+
+.intensity-bar {
+  height: 0.5vmin;
+  background-color: rgb(75, 255, 75);
+  margin: 0.5vmin 0;
 }
