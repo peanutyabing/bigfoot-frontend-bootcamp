@@ -21,6 +21,13 @@ export default function SightingContent() {
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [newCategories, setNewCategories] = useState([]);
+
+  const intensityMap = {
+    1: "mildly",
+    2: "very",
+    3: "extremely",
+  };
+
   let { id } = useParams();
   const navigate = useNavigate();
   const animatedComponents = makeAnimated();
@@ -185,10 +192,7 @@ export default function SightingContent() {
         console.log(err.message);
       }
       try {
-        const updatedSighting = await axios.put(
-          `${BACKEND_URL}/sightings/${id}`,
-          updates
-        );
+        await axios.put(`${BACKEND_URL}/sightings/${id}`, updates);
         setEditing(false);
       } catch (err) {
         console.log(err.message);
@@ -220,7 +224,10 @@ export default function SightingContent() {
           {sighting.categories &&
             sighting.categories.map((cat) => (
               <div className="category font-xs" key={cat.id}>
-                #{cat.name}
+                <span className="italic">
+                  {intensityMap[cat.sighting_categories.intensity]}
+                </span>
+                <span className="bold"> #{cat.name}</span>
               </div>
             ))}
         </div>
